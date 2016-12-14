@@ -1,3 +1,4 @@
+Attribute VB_Name = "ExportData"
 Option Explicit
 
 Public Const MAX_NUMBER_OF_ROWS As Long = 200

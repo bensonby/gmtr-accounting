@@ -1,3 +1,4 @@
+Attribute VB_Name = "LoadData"
 ' Dependency: JsonConverter.bas, from https://github.com/VBA-tools/VBA-JSON
 ' Also enable Microsoft Scripting Runtime from Tools -> Refernece in VBA window
 

@@ -1,3 +1,4 @@
+Attribute VB_Name = "ClearData"
 Option Explicit
 
 Public Function GetDataWorksheetNames() As String()
