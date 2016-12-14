@@ -6,6 +6,28 @@
 Option Explicit
 
 Public Const FOR_READING As Integer = 1
+Public Const JSON_URL As String = "https://github.com/bensonby/gmtr-accounting/blob/data/data.json?raw=true"
+
+Public Sub DownloadJsonFile()
+  Dim WinHttpReq As Object
+  Dim oStream As Object
+
+  Set WinHttpReq = CreateObject("MSXML2.ServerXMLHTTP.6.0")
+  WinHttpReq.Open "GET", JSON_URL, False
+  WinHttpReq.send
+
+  If WinHttpReq.Status = 200 Then
+    Set oStream = CreateObject("ADODB.Stream")
+    oStream.Open
+    oStream.Type = 1
+    oStream.Write WinHttpReq.responseBody
+    oStream.SaveToFile ThisWorkbook.Path & "\" & "data.json", 2 ' 1 = no overwrite, 2 = overwrite
+    MsgBox "Data File Download Completed"
+    oStream.Close
+  Else
+    MsgBox "Download Error! HTTP Status: " & CStr(WinHttpReq.Status)
+  End If
+End Sub
 
 Public Sub LoadJsonFromFile()
   Dim fs As Object
