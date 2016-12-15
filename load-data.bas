@@ -44,6 +44,13 @@ Public Sub LoadJsonFromFile()
   Set jsonData = JsonConverter.ParseJson(fsTextStream.ReadAll())
 
   For Each worksheetName in jsonData.Keys()
+    If Not Utils.IsWorksheetExist("", CStr(worksheetName)) Then
+      MsgBox "Worksheet not found: " & worksheetName
+      Exit Sub
+    End If
+  Next
+
+  For Each worksheetName in jsonData.Keys()
     Application.StatusBar = "Loading data for " & CStr(worksheetName)
 
     worksheetData = ConvertCollectionToArray(jsonData(worksheetName))
