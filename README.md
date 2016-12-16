@@ -22,3 +22,9 @@ You can create buttons and assign them with the corresponding Macros.
 
 - In the module `Config`, you can configure the URL of the JSON data file
   and the worksheet names for `SaveJsonToFile` and `ClearWorksheetData`
+
+## Important!
+
+- There is currently a constraint on the maximum number of rows (200) and columns (300) to export to JSON.
+  This is to avoid misuse of Excel functions leading to the unnecessarily large "Used Range" in a worksheet.
+  You can check for the detected used range on a worksheet by pressing `Ctrl+End`
