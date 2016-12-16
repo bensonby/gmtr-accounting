@@ -13,6 +13,11 @@ Public Sub DownloadJsonFile()
   Dim WinHttpReq As Object
   Dim oStream As Object
 
+  If Config.IsExpired() = True Then
+    MsgBox "Worksheet expired!"
+    Exit Sub
+  End If
+
   Set WinHttpReq = CreateObject("MSXML2.ServerXMLHTTP.6.0")
   WinHttpReq.Open "GET", JSON_URL, False
   WinHttpReq.send
@@ -38,6 +43,11 @@ Public Sub LoadJsonFromFile()
   Dim worksheetData As Variant
   Dim startCell As Range
   Dim endCell As Range
+
+  If Config.IsExpired() = True Then
+    MsgBox "Worksheet expired!"
+    Exit Sub
+  End If
 
   Set fs = CreateObject("Scripting.FileSystemObject")
   Set fsTextStream = fs.OpenTextFile("data.json", FOR_READING)
