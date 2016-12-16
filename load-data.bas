@@ -7,7 +7,7 @@ Attribute VB_Name = "LoadData"
 Option Explicit
 
 Public Const FOR_READING As Integer = 1
-Public Const JSON_URL As String = "https://github.com/bensonby/gmtr-accounting/blob/data/data.json?raw=true"
+Public Const JSON_URL As String = "https://s3-ap-southeast-1.amazonaws.com/gmtresearch-accounting-screen/data.json"
 
 Public Sub DownloadJsonFile()
   Dim WinHttpReq As Object
