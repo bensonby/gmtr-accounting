@@ -9,14 +9,31 @@ Option Explicit
 Public Const FOR_READING As Integer = 1
 Public Const JSON_URL As String = "https://s3-ap-southeast-1.amazonaws.com/gmtresearch-accounting-screen/data.json"
 
-Public Sub DownloadJsonFile()
+Public Sub OnWorkbookOpen()
+  If Utils.IsFileExist(Config.LOCAL_DATA_FILENAME) = False Then
+    Call DownloadAndLoadJsonFile
+  Else
+    Call LoadJsonFromFile
+  End If
+End Sub
+
+Public Sub DownloadAndLoadJsonFile()
+  If DownloadJsonFile() = True Then
+    Call LoadJsonFromFile
+  End If
+End Sub
+
+Public Function DownloadJsonFile() As Boolean
   Dim WinHttpReq As Object
   Dim oStream As Object
 
   If Config.IsExpired() = True Then
     MsgBox "Worksheet expired!"
-    Exit Sub
+    DownloadJsonFile = False
+    Exit Function
   End If
+
+  Application.StatusBar = "Downloading data file..."
 
   Set WinHttpReq = CreateObject("MSXML2.ServerXMLHTTP.6.0")
   WinHttpReq.Open "GET", JSON_URL, False
@@ -27,15 +44,18 @@ Public Sub DownloadJsonFile()
     oStream.Open
     oStream.Type = 1
     oStream.Write WinHttpReq.responseBody
-    oStream.SaveToFile ThisWorkbook.Path & "\" & "data.json", 2 ' 1 = no overwrite, 2 = overwrite
-    MsgBox "Data File Download Completed"
+    oStream.SaveToFile ThisWorkbook.Path & "\" & Config.LOCAL_DATA_FILENAME, 2 ' 1 = no overwrite, 2 = overwrite
     oStream.Close
+    Application.StatusBar = "Download complete! Loading data..."
+    DownloadJsonFile = True
   Else
     MsgBox "Download Error! HTTP Status: " & CStr(WinHttpReq.Status)
+    Application.StatusBar = False
+    DownloadJsonFile = False
   End If
-End Sub
+End Function
 
-Public Sub LoadJsonFromFile()
+Private Sub LoadJsonFromFile()
   Dim fs As Object
   Dim fsTextStream As Object
   Dim jsonData As Dictionary
@@ -50,7 +70,7 @@ Public Sub LoadJsonFromFile()
   End If
 
   Set fs = CreateObject("Scripting.FileSystemObject")
-  Set fsTextStream = fs.OpenTextFile("data.json", FOR_READING)
+  Set fsTextStream = fs.OpenTextFile(Config.LOCAL_DATA_FILENAME, FOR_READING)
   Set jsonData = JsonConverter.ParseJson(fsTextStream.ReadAll())
 
   For Each worksheetName in jsonData.Keys()

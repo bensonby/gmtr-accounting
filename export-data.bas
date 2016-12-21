@@ -10,7 +10,7 @@ Public Sub SaveJsonToFile()
   Dim data As String
 
   Set fs = CreateObject("Scripting.FileSystemObject")
-  Set jsonFile = fs.CreateTextFile(ThisWorkbook.Path & "\" & "data.json")
+  Set jsonFile = fs.CreateTextFile(ThisWorkbook.Path & "\" & Config.LOCAL_DATA_FILENAME)
 
   If Config.IsExpired() = True Then
     MsgBox "Worksheet expired!"
