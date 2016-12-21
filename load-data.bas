@@ -10,7 +10,7 @@ Public Const FOR_READING As Integer = 1
 Public Const JSON_URL As String = "https://s3-ap-southeast-1.amazonaws.com/gmtresearch-accounting-screen/data.json"
 
 Public Sub OnWorkbookOpen()
-  If Utils.IsFileExist(Config.LOCAL_DATA_FILENAME) = False Then
+  If Utils.IsFileExist(ThisWorkbook.Path & "\" & Config.LOCAL_DATA_FILENAME) = False Then
     Call DownloadAndLoadJsonFile
   Else
     Call LoadJsonFromFile
@@ -70,7 +70,7 @@ Private Sub LoadJsonFromFile()
   End If
 
   Set fs = CreateObject("Scripting.FileSystemObject")
-  Set fsTextStream = fs.OpenTextFile(Config.LOCAL_DATA_FILENAME, FOR_READING)
+  Set fsTextStream = fs.OpenTextFile(ThisWorkbook.Path & "\" & Config.LOCAL_DATA_FILENAME, FOR_READING)
   Set jsonData = JsonConverter.ParseJson(fsTextStream.ReadAll())
 
   For Each worksheetName in jsonData.Keys()
