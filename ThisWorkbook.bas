@@ -1,3 +1,3 @@
 Private Sub Workbook_Open()
-  Call LoadData.OnWorkbookOpen
+  Call CheckExpiry.OnWorkbookOpen
 End Sub
