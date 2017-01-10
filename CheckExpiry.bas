@@ -8,12 +8,27 @@ Private Const API_KEY As String = "<Insert the API Key here>"
 Private Const MAIN_WORKSHEET_NAME As String = "Output"
 Private Const PASSWORD As String = "gmtr-Oursky"
 
+Private Function getFirstDataWorksheet() As String
+  Dim ws As Worksheet
+  For Each ws In ThisWorkbook.Worksheets
+    If ws.Name <> MAIN_WORKSHEET_NAME Then
+      getFirstDataWorksheet = ws.Name
+      Exit For
+    End If
+  Next ws
+  getFirstDataWorksheet = ""
+End Function
+
 Public Sub OnWorkbookOpen()
+  Dim firstDataWorksheet As String
   Dim code As String
   Dim isSpreadsheetValid As Boolean
 
   'Hide the main worksheet. Only show after the expiry date check is passed
+  'Since we cannot hide the last worksheet, we will unhide the first data worksheet
+  firstDataWorksheet = getFirstDataWorksheet()
   ThisWorkbook.Unprotect PASSWORD
+  ThisWorkbook.Sheets(firstDataWorksheet).Visible = True
   ThisWorkbook.Sheets(MAIN_WORKSHEET_NAME).Visible = xlVeryHidden
   ThisWorkbook.Protect PASSWORD, True, False
 
@@ -39,6 +54,7 @@ Public Sub OnWorkbookOpen()
   'Show main worksheet
   ThisWorkbook.Unprotect PASSWORD
   ThisWorkbook.Sheets(MAIN_WORKSHEET_NAME).Visible = True
+  ThisWorkbook.Sheets(firstDataWorksheet).Visible = False
   ThisWorkbook.Sheets(MAIN_WORKSHEET_NAME).Activate
   ThisWorkbook.Protect PASSWORD, True, False
 End Sub
