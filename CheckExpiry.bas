@@ -14,6 +14,13 @@ Public Sub OnWorkbookOpen()
   Dim code As String
   Dim isSpreadsheetValid As Boolean
 
+  'Change macro security settings to lowest for worksheet manipulation
+  'Will restore at end of script
+
+  Dim originalSecurity As Long
+  originalSecurity = Application.AutomationSecurity
+  Application.AutomationSecurity = msoAutomationSecurityLow
+
   'Show only the Loading Worksheet, hide all others
   'Will hide the loading worksheet and show the main worksheet after expiry date check is passed
   ThisWorkbook.Unprotect PASSWORD
@@ -31,6 +38,7 @@ Public Sub OnWorkbookOpen()
   isSpreadsheetValid = CheckExpiryDate(code)
 
   If code = vbNullString Then
+    Application.AutomationSecurity = originalSecurity
     ThisWorkbook.Close SaveChanges:=False
     Exit Sub
   End If
@@ -39,6 +47,7 @@ Public Sub OnWorkbookOpen()
   Do While isSpreadsheetValid = False
     code = PromptCode()
     If code = vbNullString Then
+      Application.AutomationSecurity = originalSecurity
       ThisWorkbook.Close SaveChanges:=False
       Exit Sub
     End If
@@ -51,6 +60,8 @@ Public Sub OnWorkbookOpen()
   ThisWorkbook.Sheets(LOADING_WORKSHEET_NAME).Visible = xlVeryHidden
   ThisWorkbook.Sheets(MAIN_WORKSHEET_NAME).Activate
   ThisWorkbook.Protect PASSWORD, True, False
+
+  Application.AutomationSecurity = originalSecurity
 End Sub
 
 Private Function GetCode() As String
