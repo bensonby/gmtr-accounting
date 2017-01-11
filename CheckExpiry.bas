@@ -6,30 +6,24 @@ Private Const EXPIRY_CHECK_URL As String = "https://h3l4cv0j9j.execute-api.us-ea
 Private Const CODE_INPUT_RANGE_NAME As String = "CODE_INPUT"
 Private Const API_KEY As String = "<Insert the API Key here>"
 Private Const MAIN_WORKSHEET_NAME As String = "Output"
+Private Const LOADING_WORKSHEET_NAME As String = "Loading"
 Private Const PASSWORD As String = "gmtr-Oursky"
 
-Private Function getFirstDataWorksheet() As String
-  Dim ws As Worksheet
-  For Each ws In ThisWorkbook.Worksheets
-    If ws.Name <> MAIN_WORKSHEET_NAME Then
-      getFirstDataWorksheet = ws.Name
-      Exit For
-    End If
-  Next ws
-  getFirstDataWorksheet = ""
-End Function
-
 Public Sub OnWorkbookOpen()
-  Dim firstDataWorksheet As String
+  Dim ws As Worksheet
   Dim code As String
   Dim isSpreadsheetValid As Boolean
 
-  'Hide the main worksheet. Only show after the expiry date check is passed
-  'Since we cannot hide the last worksheet, we will unhide the first data worksheet
-  firstDataWorksheet = getFirstDataWorksheet()
+  'Show only the Loading Worksheet, hide all others
+  'Will hide the loading worksheet and show the main worksheet after expiry date check is passed
   ThisWorkbook.Unprotect PASSWORD
-  ThisWorkbook.Sheets(firstDataWorksheet).Visible = True
-  ThisWorkbook.Sheets(MAIN_WORKSHEET_NAME).Visible = xlVeryHidden
+  ThisWorkbook.Sheets(LOADING_WORKSHEET_NAME).Visible = True
+  For Each ws In ThisWorkbook.Worksheets
+    If ws.Name <> LOADING_WORKSHEET_NAME And ws.Visible <> False Then
+      ' User cannot see these worksheets even in Unhide menu
+      ws.Visible = False
+    End If
+  Next ws
   ThisWorkbook.Protect PASSWORD, True, False
 
   'Initial Check
@@ -54,7 +48,7 @@ Public Sub OnWorkbookOpen()
   'Show main worksheet
   ThisWorkbook.Unprotect PASSWORD
   ThisWorkbook.Sheets(MAIN_WORKSHEET_NAME).Visible = True
-  ThisWorkbook.Sheets(firstDataWorksheet).Visible = False
+  ThisWorkbook.Sheets(LOADING_WORKSHEET_NAME).Visible = xlVeryHidden
   ThisWorkbook.Sheets(MAIN_WORKSHEET_NAME).Activate
   ThisWorkbook.Protect PASSWORD, True, False
 End Sub
