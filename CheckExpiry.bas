@@ -61,7 +61,7 @@ End Sub
 
 Private Function GetCode() As String
   Dim currentValue As String
-  currentValue = Range(CODE_INPUT_RANGE_NAME).Value
+  currentValue = ThisWorkbook.Sheets(MAIN_WORKSHEET_NAME).Range(CODE_INPUT_RANGE_NAME).Value
   If currentValue <> "" Then
     GetCode = currentValue
   Else
@@ -72,7 +72,7 @@ End Function
 Private Function PromptCode() As String
   Dim code As String
   code = InputBox("Enter code:")
-  Range(CODE_INPUT_RANGE_NAME).Value = code
+  ThisWorkbook.Sheets(MAIN_WORKSHEET_NAME).Range(CODE_INPUT_RANGE_NAME).Value = code
   PromptCode = code
 End Function
 
